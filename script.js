@@ -29,15 +29,23 @@ $(document).ready(function() {
 	}
 	
 	//shuffle the deck
+	deck = _.shuffle(deck);
 	
-	
-	var cards_player_1 = [];
-	var cards_player_2 = [];
+	var cards_player_1 = deck.splice(0, Math.ceil(deck.length/2));
+	var cards_player_2 = deck;
 	//divide out the cards into the two arrays
 	
 	
 	//create a function (algorithm) called "war" that takes two cards as parameters, compares them and returns a winner. A tie should return false.
-	function war() {
+	function war(card1, card2) {
+		if(card1.number > card2.number){
+			return card1;
+		} 
+		else if (card2.number > card1.number) {
+			return card2;
+		} else {
+			return false;
+		}
 	}
 	
 	
@@ -45,7 +53,6 @@ $(document).ready(function() {
 		//compare the cards
 		//give the winner both cards (at end of deck)
 	function play() {
-		
 		//this function (defined below) will continue to the next turn
 		advance();
 	}
@@ -59,7 +66,36 @@ $(document).ready(function() {
 			$("#opp-card-count").html(cards_player_1.length);
 			$("#my-card").html(convert_value_to_string(card_2.number)+" "+card_2.suit);
 			$("#my-card-count").html(cards_player_2.length);
-			
+
+			var winnerCard = war(card_1, card_2);
+			if(winnerCard == card_1){
+				// Player1
+				// Put both players' cards at the back of the winner's deck and
+				//   shift the array to remove the first element
+				cards_player_1.push(card_1);
+				cards_player_1.push(card_2);
+				cards_player_1.shift();
+				cards_player_2.shift();
+			}
+			else if (winnerCard == card_2){
+				// Player2 won
+				// Put both players' cards at the back of the winner's deck and
+				//   shift the array to remove the first element
+				cards_player_2.push(card_2);
+				cards_player_2.push(card_1);
+				cards_player_2.shift();
+				cards_player_1.shift();
+			} else {
+				// It's a tie!
+				// Step 4:
+				// Put each player's card at the back their array and
+				//   shift the array to remove the first element
+				cards_player_1.push(card_1);
+				cards_player_1.shift();
+				cards_player_2.push(card_2);
+				cards_player_2.shift();
+
+			}
 		}
 	}
 	advance();
